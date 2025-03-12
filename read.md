@@ -73,6 +73,24 @@
 * на интерфейсе включаем аутентификацию ip ospg authentication message-digest 
 * ip ospf message-digest-key 10 md5 10 — пароль и хэш, настраивается подобное для обоих интерфейсов  
 
+## Лаба 1 (весна)
+* telnet <ip-адрес> — удаленное подключение через telnet
+* show cdp neighbors (detail) — соседи по протоколу cisco discovery
+
+#### для вычисления айпи (в том числе для PC) понадобится
+* show arp — таблица arp (address resolution protocol) для роутера
+* show mac-address-table — таблица мак-адресов для свича
+
+### Настройка ssh
+* username <имя> privilege 15 secret <пароль> — назначение нового пользователя 
+* ip domain-name <имя> — доменное имя
+* crypto key generate rsa — генерация ключа для ssh.
+* line vty 0 4
+* transport input ssh
+* login local
+* ssh -l <имя> <ip-адрес>
+
+
 ## Прочее
 [Штука №1](https://ipcalc.co/)
 
