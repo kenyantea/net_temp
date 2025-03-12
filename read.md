@@ -82,9 +82,10 @@
 * show mac-address-table — таблица мак-адресов для свича
 
 ### Настройка ssh
+* conf t 
 * username <имя> privilege 15 secret <пароль> — назначение нового пользователя 
 * ip domain-name <имя> — доменное имя
-* crypto key generate rsa — генерация ключа для ssh.
+* crypto key generate rsa — генерация ключа для ssh, после этой команды ввести, например, 1024, 2048...
 * line vty 0 4
 * transport input ssh
 * login local
