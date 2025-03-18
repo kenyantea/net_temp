@@ -91,6 +91,21 @@
 * login local
 * ssh -l <имя> <ip-адрес>
 
+## Лаба 2 (весна)
+
+### Сбрасываем у роутера пароль
+* физически выключаем и включаем его, бежим в консоль
+* confreg 2142
+* reset — пойдет перезагрузка
+* нажимаем no, когда будет вопрос "continue with configuration dialog?"
+* входим в enable
+* copy start run — копируем конфиг
+* conf t
+* no enable secret/password — отключаем пароли
+* config-register 2102
+* exit
+* write
+* (выходим) reload 
 
 ## Прочее
 [Штука №1](https://ipcalc.co/)
