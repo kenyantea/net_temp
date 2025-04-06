@@ -88,6 +88,7 @@
 * crypto key generate rsa — генерация ключа для ssh, после этой команды ввести, например, 1024, 2048...
 * line vty 0 4
 * transport input ssh
+* (опционально) transport input all — чтобы можно было подключаться не только по ssh, но и по telnet
 * login local
 * ssh -l <имя> <ip-адрес>
 
@@ -105,8 +106,24 @@
 * config-register 2102
 * exit
 * write
-* (выходим) reload 
+* (выходим) reload
 
+## Лаба 3 (весна)
+настройка свича (STP)
+* hostname <имя>
+* no ip domain-lookup
+* [настройка ssh](#настройка-ssh)
+* vlan <нужный номер>
+* int range _f0/10-13_ — настройки сразу для диапазона интерфейсов
+* switch mode trunk — после изменения свойств интерфейсов нас выкинет
+* spanning-tree mode rapid-pvst
+* int _f0/12_
+* spanning-tree link-type point-to-point либо shared — тип соединения между коммутаторами указан в задании
+* int _f0/3_
+* switchport mode access -> switchport port-security — сначала мы явно должны перевести порт в режим access
+* switchport mode access -> switch access vlan 30 -> sw port-security -> spanning-tree portfast -> sq port-security maximum 1 (ограничение в 1 устройство) -> sw po mac-address <мак-адрес>
+* sw mo ac -> sw ac vlan 30 -> spanning-tree bpduguard enable (интерфейс при "вредоносном" пакете переходит в error-disabled) 
+  
 ## Прочее
 [Штука №1](https://ipcalc.co/)
 
