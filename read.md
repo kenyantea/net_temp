@@ -121,9 +121,31 @@
 * spanning-tree link-type point-to-point либо shared — тип соединения между коммутаторами указан в задании
 * int _f0/3_
 * switchport mode access -> switchport port-security — сначала мы явно должны перевести порт в режим access
-* switchport mode access -> switch access vlan 30 -> sw port-security -> spanning-tree portfast -> sq port-security maximum 1 (ограничение в 1 устройство) -> sw po mac-address <мак-адрес>
-* sw mo ac -> sw ac vlan 30 -> spanning-tree bpduguard enable (интерфейс при "вредоносном" пакете переходит в error-disabled) 
-  
+* **статический port-security (shutdown) edge-port**: switchport mode access -> switch access vlan 30 -> sw port-security -> spanning-tree portfast (если надо) -> sw port-security maximum 1 (ограничение в 1 устройство) -> sw po mac-address <мак-адрес>
+* **bpduguard**: sw mo ac -> sw ac vlan 30 -> spanning-tree bpduguard enable (интерфейс при "вредоносном" пакете переходит в error-disabled)
+* **статический port-security restrict/protect**: так же, как и для shutdown, но с добавлением команды sw po violation restrict/protect
+* sw po mac-address sticky позволяет записать мак-адрес автоматически, то есть не придется узнавать мак-адрес самому. ну а вообще, это вроде как **динамический port-security**
+
+### Настройка агрегирования 
+
+* переходим на нужные интерфейсы
+* shutdown — надо вырубить интерфейс(ы)
+* sw mo tr
+* channel-group 1 mode <...>
+  * desirable/auto (для одного свича первое, для второго второе, хотя вроде можно для обоих первое) — для PaGP
+  * active — для LACP
+  * on — для статического
+* no sh
+* так настраиваем для обоих свичей
+* show etherchannel summary — показывает агрегированные каналы (как мы их соединили)
+
+### Настройка DHCP
+* ip dhcp pool *vlan40*
+* network <ip> <маска>
+* default-router <ip>
+* dns-server 8.8.8.8
+* ip dhcp excluded-address <ip default-router и прочие>
+
 ## Прочее
 [Штука №1](https://ipcalc.co/)
 
