@@ -146,6 +146,60 @@
 * dns-server 8.8.8.8
 * ip dhcp excluded-address <ip default-router и прочие>
 
+## Лаба №4
+
+### Dual Stack.
+
+Настройка IP-адресов интерфейсов:
+* cont f
+* interface se0/0/0
+* ip address 10.2.2.1 255.255.255.252
+* ipv6 address 2001:2:2:2::1/64
+* ipv6 enable
+* no shutdown
+* (то же самое для другого роутера)
+* Для включения передачи сообщений по IPv6 необходимо на каждом маршрутизаторе ввести команду: ipv6 unicast-routing
+
+### IPv6 tunneling
+* ipv6 unicast-routing
+* interface tunnel 0
+* ipv6 address 2003::1/64
+* tunnel mode ipv6ip
+* tunnel source fa0/0
+* tunnel destination 10.3.3.2
+* ipv6 route ::/0 2003::2 (если нужен маршрут)
+
+### Совместная работа IPv6 и IPv4. Настройка NAT-PT
+* ipv6 enable
+* ipv6 nat
+* ipv6 nat prefix 2002:20::/96
+* ipv6 nat v4v6 source 10.0.0.2 2002:20::2
+* ipv6 nat v6v4 source 2001:15::2 15.16.17.2
+* show ipv6 nat translations — посмотреть преобразования NAT 
+
+### DHCPv6 (у Сосенушкина)
+* ipv6 unicast-routing
+* ipv6 dhcp pool _v6pool_ — у него перебрасывает в режим config-dhcpv6, у меня просто в config-dhcp
+* address prefix <адрес/префикс>
+* interface _fa0/0_
+* ipv6 dhcp server _v6pool_
+* ipv6 np managed-config-flag
+* no shutdown
+* ipv6 address _тот же префикс_
+
+### DHCPv6 (у меня как получилось)
+* ipv6 dhcp pool MY_POOL
+* dns-server 2001:4860:4860::8888 — публичный
+* domain-name example.com — необязательно
+* interface GigabitEthernet0/0
+* ipv6 address 2001:9::1/64
+* ipv6 nd other-config-flag
+* ipv6 dhcp server marina
+
+### Прочие замечания
+* ipv6 enable — база
+* смотреть на ip route и ipv6 route обязательно
+
 ## Прочее
 [Штука №1](https://ipcalc.co/)
 
