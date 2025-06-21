@@ -4,6 +4,13 @@
 * [Лаба 2](#лаба-2)
 * [Лаба 3](#лаба-3)
 * [Лаба 4](#лаба-4)
+* [Лаба 1](#лаба-1-весна)
+* [Лаба 2](#лаба-2-весна)
+* [Лаба 3](#лаба-3-весна)
+* [Лаба 4](#лаба-4-весна)
+* [Лаба 5](#лаба-5-весна)
+* [Прочее](#прочее)
+
 
 ## Лаба 1
 
@@ -118,6 +125,8 @@
 * spanning-tree mode rapid-pvst
 * int _f0/12_
 * spanning-tree link-type point-to-point либо shared — тип соединения между коммутаторами указан в задании
+
+### настройка port security
 * int _f0/3_
 * switchport mode access -> switchport port-security — сначала мы явно должны перевести порт в режим access
 * **статический port-security (shutdown) edge-port**: switchport mode access -> switch access vlan 30 -> sw port-security -> spanning-tree portfast (если надо) -> sw port-security maximum 1 (ограничение в 1 устройство) -> sw po mac-address <мак-адрес>
@@ -140,8 +149,8 @@
 
 ### Настройка DHCP
 * ip dhcp pool *vlan40*
-* network <ip> <маска>
-* default-router <ip>
+* network _ip_ <маска>
+* default-router _ip_
 * dns-server 8.8.8.8
 * ip dhcp excluded-address <ip default-router и прочие>
 
@@ -211,7 +220,7 @@
 
 ### настройка EIGRP 
 * router eigrp _100_
-* network <ip> <маска> — повторить для всех нужных сетей
+* network _ip_ <маска> — повторить для всех нужных сетей
 * no auto-summary
 * passive-interface _eth0/0/0_ — все те, которые соединены с PC, то есть не между роутерами
 * повторяем для каждого роутера, который планируется включить в eigrp
@@ -238,3 +247,82 @@
 как идут по заданию адреса, так и назначай
 
 **tip**: если потеряла доступ к роутеру или не можешь войти в кластер, то PC + синий проводок, подключенный к console, вероятно, выручит
+
+## Прочее (2)
+
+1) настройка vlan и интерфейсов на свичах
+
+создание vlan
+```
+conf t
+vlan 11
+name NAME
+```
+
+настройка SVI
+```
+int vlan 11
+ip addr сабнет маска
+no sh
+```
+
+настройка Portfast
+```
+int gig0/1
+sw mo ac
+sw ac vlan 11
+span portfast
+```
+
+настройка EtherChannel (не забываем, что это для каждой из сторон)
+```
+int port-channel 1
+
+int gig0/1
+channel-g 1 mode on 
+```
+
+2) настройка PVST
+
+```
+conf t
+span mo pvst
+
+# установка корневого коммунатора
+span vlan 67 priority 0
+```
+
+3) настройка ipv4
+
+назначаем на интерфейсы адреса (ну это понятно)
+
+маршрутизация eigrp
+
+```
+router eigrp 11
+net <адрес> <маска>
+no auto-sum
+```
+
+gre-туннель
+```
+int tun0
+ip add <адрес> <маска>
+tun source gig0/0 # откуда
+tun dest <адрес> #куда
+```
+
+4) настройка HSRP
+
+```
+int vlan 11
+ip add <адрес> <маска>
+standby ver 2
+standby 11 ip <адрес>
+standby 11 priority 100
+```
+
+5) настройка ssh [здесь](#настройка-ssh)
+
+6) настройка port security [здесь](#настройка-port-security)
+
