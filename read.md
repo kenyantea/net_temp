@@ -140,7 +140,7 @@
 * shutdown — надо вырубить интерфейс(ы)
 * sw mo tr
 * channel-group 1 mode <...>
-  * desirable/auto (для одного свича первое, для второго второе, хотя вроде можно для обоих первое) — для PaGP
+  * desirable/auto (для одного свича первое, для второго второе) — для PaGP
   * active — для LACP
   * on — для статического
 * no sh
@@ -152,7 +152,7 @@
 * network _ip_ <маска>
 * default-router _ip_
 * dns-server 8.8.8.8
-* ip dhcp excluded-address <ip default-router и прочие>
+* ip dhcp excluded-address < ip default-router и прочие >
 
 ## Лаба №4
 
@@ -250,6 +250,13 @@
 
 ## Прочее (2)
 
+с самого начала назначить интерфейсы на роутеры, потом уже dhcp.
+
+чтобы не мучиться с расчетом адресов, можно воспользоваться
+[настройкой DHCP](#настройка-dhcp). dns указываем не 8.8.8.8, а по заданию выбираем
+
+сначала с Multilayer Switch, потом со Switch разбираться
+
 1) настройка vlan и интерфейсов на свичах
 
 создание vlan
@@ -274,13 +281,7 @@ sw ac vlan 11
 span portfast
 ```
 
-настройка EtherChannel (не забываем, что это для каждой из сторон)
-```
-int port-channel 1
-
-int gig0/1
-channel-g 1 mode on 
-```
+настройка [EtherChannel](#настройка-агрегирования) (не забываем, что это для каждой из сторон)
 
 2) настройка PVST
 
@@ -289,7 +290,7 @@ conf t
 span mo pvst
 
 # установка корневого коммунатора
-span vlan 67 priority 0
+span vlan 11 priority 0
 ```
 
 3) настройка ipv4
